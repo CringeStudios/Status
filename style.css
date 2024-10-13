@@ -1,0 +1,50 @@
+body {
+	font-family: sans-serif;
+	margin: 0;
+	padding: 20px;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+}
+
+h1 {
+	font-size: 2em;
+	margin: 0;
+}
+
+.service {
+	display: flex;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.service .name {
+	flex-grow: 1;
+	font-weight: bold;
+}
+
+.service.ok .name {
+	color: green;
+}
+
+.service.error .name {
+	color: red;
+}
+
+.service .status {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+}
+
+.service.ok .status {
+	background-color: green;
+}
+
+.service.error .status {
+	background-color: red;
+}
