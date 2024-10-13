@@ -32,7 +32,7 @@ function updateStatus(data) {
 			}
 		]
 	};
-	lastUpdatedEl.textContent = new Date(data.time).toLocaleString();
+	lastUpdatedEl.textContent = new Date(data.unixTime).toLocaleString();
 
 	statusEl.innerHTML = '';
 	data.services.forEach(service => {
@@ -52,6 +52,8 @@ function updateStatus(data) {
 		statusEl.appendChild(serviceItem);
 	});
 }
+
+updateStatus(null);
 
 fetch('https://amogus.cringe-studios.com/api/status')
 	.then(response => response.json())
