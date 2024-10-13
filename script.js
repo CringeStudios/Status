@@ -19,7 +19,7 @@ function updateStatus(serverData) {
 	const serverSection = document.createElement('div');
 	serverSection.classList.add('server-section');
 
-	if (!serverData.services) {
+	if (serverData.services == null) {
 		serverSection.innerHTML = `<h2>${serverData.server} unavailable</h2>`;
 		statusEl.appendChild(serverSection);
 		return;
@@ -49,8 +49,17 @@ function updateStatus(serverData) {
 	statusEl.appendChild(serverSection);
 }
 
+async function fetchStatus(server) {
+	try {
+		let response = await fetch(server.url);
+		let json = await response.json();
+
+		updateStatus({ ...json, server: server.name });
+	} catch (e) {
+		updateStatus({ server: server.name });
+	}
+}
+
 for (let server of servers) {
-	fetch(server.url)
-		.catch(a => updateStatus({ server: server.name }))
-		.then(data => updateStatus({ ...data, server: server.name }))
+	fetchStatus(server);
 }
