@@ -8,7 +8,7 @@ const servers = [
 	},
 	{
 		name: 'Another Server',
-		url: 'https://another-server.com/api/status'
+		url: 'https://keller.status.cringe-studios.com/api/status'
 	},
 	// Add more server configurations here
 ];
