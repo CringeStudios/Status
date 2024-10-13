@@ -18,6 +18,13 @@ function updateStatus(serverData) {
 
 	const serverSection = document.createElement('div');
 	serverSection.classList.add('server-section');
+
+	if (!serverData.services) {
+		serverSection.innerHTML = `<h2>${serverData.server} unavailable</h2>`;
+		statusEl.appendChild(serverSection);
+		return;
+	}
+
 	serverSection.innerHTML = `<h2>${serverData.server}</h2>`;
 
 	const servicesList = document.createElement('ul');
@@ -42,25 +49,8 @@ function updateStatus(serverData) {
 	statusEl.appendChild(serverSection);
 }
 
-// Assuming the API response now includes a "server" property for each service
-Promise.all(servers.map(server => fetch(server.url)
-	.then(response => response.json())
-	.catch(error => {
-		console.error(`Error fetching status from ${server.url}:`, error);
-		return {
-			server: server.name,
-			services: []
-		};
-	})
-	.then(data => ({ ...data, server: server.name }))))
-	.then(responses => {
-		const mergedData = responses.reduce((acc, data) => {
-			acc.time = data.time;
-			acc.services = [...acc.services, ...data.services];
-			return acc;
-		}, { services: [] });
-
-		// Update the status page for each server individually
-		mergedData.services.forEach(updateStatus);
-	})
-	.catch(error => console.error('Error fetching overall status:', error));
+for (let server of servers) {
+	fetch(server.url)
+		.then(data => updateStatus({ ...data, server: server.name }))
+		.error(a => updateStatus({ server: server.name }));
+}
