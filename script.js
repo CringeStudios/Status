@@ -51,6 +51,6 @@ function updateStatus(serverData) {
 
 for (let server of servers) {
 	fetch(server.url)
+		.catch(a => updateStatus({ server: server.name }))
 		.then(data => updateStatus({ ...data, server: server.name }))
-		.error(a => updateStatus({ server: server.name }));
 }
