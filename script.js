@@ -4,13 +4,16 @@ const lastUpdatedEl = document.getElementById('last-updated');
 const servers = [
 	{
 		name: 'Cringe Studios',
-		url: 'https://amogus.cringe-studios.com/api/status'
+		url: 'https://zap.status.cringe-studios.com/api/status'
 	},
 	{
-		name: 'Another Server',
+		name: 'Keller',
 		url: 'https://keller.status.cringe-studios.com/api/status'
 	},
-	// Add more server configurations here
+	{
+		name: 'Graphite',
+		url: 'https://graphite.status.cringe-studios.com/api/status'
+	},
 ];
 
 function updateStatus(serverData) {
