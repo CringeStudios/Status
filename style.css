@@ -86,5 +86,5 @@ p {
 }
 
 .service.error>.status {
-	background-color: orangered;
+	background-color: red;
 }
