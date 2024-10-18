@@ -1,5 +1,4 @@
-const statusEl = document.getElementById('services');
-const lastUpdatedEl = document.getElementById('last-updated');
+const serversEl = document.getElementById('servers');
 
 const servers = [
 	{
@@ -16,40 +15,76 @@ const servers = [
 	},
 ];
 
-function updateStatus(serverData) {
-	lastUpdatedEl.textContent = new Date(serverData.time).toLocaleString();
+function createElements() {
+	for (let server of servers) {
+		const serverEl = document.createElement('div');
+		serverEl.id = server.name;
+		serverEl.classList.add('server');
 
-	const serverSection = document.createElement('div');
-	serverSection.classList.add('server-section');
+		const serverHead = document.createElement('div');
+		serverHead.classList.add('head');
+
+		const title = document.createElement('b');
+		title.innerText = server.name;
+		serverHead.appendChild(title);
+
+		const lastUpdated = document.createElement('span');
+		lastUpdated.classList.add('last-updated');
+		lastUpdated.innerText = 'Last Updated: Never';
+		serverHead.appendChild(lastUpdated);
+
+		serverEl.appendChild(serverHead);
+
+		const loading = document.createElement('div');
+		loading.classList.add('loading');
+		serverEl.appendChild(loading);
+
+		serversEl.appendChild(serverEl);
+		console.log(serversEl);
+	}
+}
+
+function updateStatus(serverData) {
+	console.log(serverData);
+
+	const serverEl = document.getElementById(serverData.server);
+	const loading = serverEl.querySelector('.loading');
+	const lastUpdated = serverEl.querySelector('.last-updated');
+	lastUpdated.innerText = 'Last Updated: ' + new Date(serverData.unixTime).toLocaleString();
+
+	const oldServicesDiv = serverEl.querySelector('.services');
+	if (oldServicesDiv != null) oldServicesDiv.remove();
+
+	const servicesDiv = document.createElement('div');
+	servicesDiv.classList.add('services');
+
+	if (loading != null) loading.remove();
+
+	while (servicesDiv.firstChild) servicesDiv.firstChild.remove();
 
 	if (serverData.services == null) {
-		serverSection.innerHTML = `<h2>${serverData.server} unavailable</h2>`;
-		statusEl.appendChild(serverSection);
+		servicesDiv.append('Unreachable');
+		serverEl.appendChild(servicesDiv);
 		return;
 	}
 
-	serverSection.innerHTML = `<h2>${serverData.server}</h2>`;
-
-	const servicesList = document.createElement('ul');
-	serverData.services.forEach(service => {
-		const serviceItem = document.createElement('li');
-		serviceItem.classList.add('service');
-		serviceItem.classList.add(service.ok ? 'ok' : 'error');
+	for (let service of serverData.services) {
+		const serviceEl = document.createElement('div');
+		serviceEl.classList.add('service');
+		serviceEl.classList.add(service.ok ? 'ok' : 'error');
 
 		const statusDot = document.createElement('div');
 		statusDot.classList.add('status');
-		serviceItem.appendChild(statusDot);
+		serviceEl.appendChild(statusDot);
 
 		const serviceName = document.createElement('span');
-		serviceName.classList.add('name');
-		serviceName.textContent = service.name;
-		serviceItem.appendChild(serviceName);
+		serviceName.innerText = service.name;
+		serviceEl.appendChild(serviceName);
 
-		servicesList.appendChild(serviceItem);
-	});
+		servicesDiv.appendChild(serviceEl);
+	}
 
-	serverSection.appendChild(servicesList);
-	statusEl.appendChild(serverSection);
+	serverEl.appendChild(servicesDiv);
 }
 
 async function fetchStatus(server) {
@@ -59,10 +94,19 @@ async function fetchStatus(server) {
 
 		updateStatus({ ...json, server: server.name });
 	} catch (e) {
-		updateStatus({ server: server.name });
+		updateStatus({ server: server.name, unixTime: new Date().getTime() });
 	}
 }
 
-for (let server of servers) {
-	fetchStatus(server);
+function fetchAllStatus() {
+	for (let server of servers) {
+		fetchStatus(server);
+	}
 }
+
+createElements();
+
+setInterval(() => {
+	fetchAllStatus();
+}, 10000);
+fetchAllStatus();
