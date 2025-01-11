@@ -13,6 +13,14 @@ const servers = [
 		name: 'Graphite',
 		url: 'https://graphite.status.cringe-studios.com/api/status'
 	},
+	{
+		name: 'Tiamat',
+		url: 'https://tiamat.status.cringe-studios.com/api/status'
+	},
+	{
+		name: 'Marduk',
+		url: 'https://marduk.status.cringe-studios.com/api/status'
+	},
 ];
 
 function createElements() {
